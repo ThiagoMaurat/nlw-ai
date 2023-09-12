@@ -1,7 +1,15 @@
+import { Button } from "@/components/ui/button";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h2>asd</h2>
-    </main>
+    <div>
+      <div>
+        <h1>upload.ai</h1>
+
+        <div>
+          <Button>Button</Button>
+        </div>
+      </div>
+    </div>
   )
 }
