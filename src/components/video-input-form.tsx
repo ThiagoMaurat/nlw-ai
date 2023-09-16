@@ -8,6 +8,17 @@ import { Label } from "./ui/label";
 
 export default function VideoInputForm() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const promptInputRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const handleUploadVideo = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const promp = promptInputRef?.current?.value;
+
+    if (!promp) {
+      return;
+    }
+  };
 
   const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
@@ -30,7 +41,7 @@ export default function VideoInputForm() {
   }, [videoFile]);
 
   return (
-    <form className="space-y-6">
+    <form onSubmit={handleUploadVideo} className="space-y-6">
       <label
         htmlFor="video"
         className="relative border flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-primary/5"
@@ -66,6 +77,7 @@ export default function VideoInputForm() {
           id="transcription_prompt"
           className="h-20 resize-none leading-relaxed"
           placeholder="Inclua palavras-chave mencionadas no vídeo separadas por vírgula (,)"
+          ref={promptInputRef}
         />
       </div>
 
