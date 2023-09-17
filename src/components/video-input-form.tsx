@@ -68,9 +68,9 @@ export default function VideoInputForm({
   const handleUploadVideo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const promp = promptInputRef?.current?.value;
+    const prompt = promptInputRef?.current?.value;
 
-    if (!promp) {
+    if (!prompt) {
       return;
     }
 
