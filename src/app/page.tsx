@@ -15,13 +15,19 @@ import { Textarea } from "@/components/ui/textarea";
 import VideoInputForm from "@/components/video-input-form";
 import { Github, Wand2 } from "lucide-react";
 import { useState } from "react";
+import { useCompletion } from "ai/react";
 
 export default function Home() {
-  const handlePromptSelected = (template: string) => {
-    console.log(template);
-  };
-
   const [temperature, setTemperature] = useState(0.5);
+  const [videoId, setVideoId] = useState<string | null>("");
+
+  const { input, setInput, handleInputChange } = useCompletion({
+    api: "http://localhost:3333/ai/complete",
+    body: {
+      videoId,
+      temperature,
+    },
+  });
 
   return (
     <div className="min-h-screen flex flex-col ">
@@ -48,6 +54,8 @@ export default function Home() {
             <Textarea
               className="resize:none p-4 leading-relaxed"
               placeholder="Inclua o prompt para a IA...."
+              value={input}
+              onChange={handleInputChange}
             />
 
             <Textarea
@@ -66,7 +74,7 @@ export default function Home() {
         </div>
 
         <aside className="w-96 space-y-6">
-          <VideoInputForm />
+          <VideoInputForm onVideoUploaded={setVideoId} />
 
           <Separator />
 
@@ -74,7 +82,7 @@ export default function Home() {
             <div className="space-y-2">
               <Label>Prompt</Label>
 
-              <PromptSelect onPromptSelected={handlePromptSelected} />
+              <PromptSelect onPromptSelected={setInput} />
             </div>
 
             <div className="space-y-2">

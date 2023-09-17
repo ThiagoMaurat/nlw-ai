@@ -10,6 +10,10 @@ import { Label } from "./ui/label";
 
 type Status = "waiting" | "converting" | "uploading" | "generating" | "sucess";
 
+interface VideoInputFormProps {
+  onVideoUploaded: (id: string) => void;
+}
+
 const statusMessage = {
   waiting: "Carregando...",
   converting: "Convertendo...",
@@ -18,7 +22,9 @@ const statusMessage = {
   sucess: "Sucesso...",
 };
 
-export default function VideoInputForm() {
+export default function VideoInputForm({
+  onVideoUploaded,
+}: VideoInputFormProps) {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [status, setStatus] = useState<Status>("waiting");
   const promptInputRef = React.useRef<HTMLTextAreaElement>(null);
@@ -103,6 +109,7 @@ export default function VideoInputForm() {
     });
 
     setStatus("sucess");
+    onVideoUploaded(videoId);
   };
 
   const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
