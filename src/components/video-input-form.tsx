@@ -1,6 +1,6 @@
 "use client";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { toBlobURL } from "@ffmpeg/util";
+import { toBlobURL, fetchFile } from "@ffmpeg/util";
 import { FileVideo, Upload } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -11,10 +11,44 @@ import { Label } from "./ui/label";
 export default function VideoInputForm() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const promptInputRef = React.useRef<HTMLTextAreaElement>(null);
-  const ffmpegRef = useRef(new FFmpeg());
+  const ffmpegRef = useRef<FFmpeg>(new FFmpeg());
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleUploadVideo = (event: React.FormEvent<HTMLFormElement>) => {
+  const convertVideoToAudio = async (video: File) => {
+    console.log("Converted started");
+
+    ffmpegRef.current.writeFile("input.mp4", await fetchFile(video));
+
+    ffmpegRef.current.on("progress", (progress) => {
+      console.log(`Convert progress : ${Math.round(progress.progress * 100)}%`);
+    });
+
+    await ffmpegRef.current.exec([
+      "-i",
+      "input.mp4",
+      "-map",
+      "0:a",
+      "-b:a",
+      "20k",
+      "-acodec",
+      "libmp3lame",
+      "output.mp3",
+    ]);
+
+    const data = await ffmpegRef.current.readFile("output.mp3");
+
+    const audioFileBlob = new Blob([data], { type: "audio/mp3" });
+
+    const audiotFile = new File([audioFileBlob], "audio.mp3", {
+      type: "audio/mpeg",
+    });
+
+    console.log("Conversion finished");
+
+    return audiotFile;
+  };
+
+  const handleUploadVideo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const promp = promptInputRef?.current?.value;
@@ -22,6 +56,10 @@ export default function VideoInputForm() {
     if (!promp) {
       return;
     }
+
+    const audioFile = await convertVideoToAudio(videoFile!);
+
+    console.log(audioFile);
   };
 
   const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
