@@ -37,7 +37,7 @@ export default function PromptSelect(props: PromptSelectProps) {
 
     onPromptSelected(selectedPrompt.template);
   };
-
+  console.log(prompts);
   return (
     <Select onValueChange={handlePromptSelected}>
       <SelectTrigger>
@@ -45,11 +45,13 @@ export default function PromptSelect(props: PromptSelectProps) {
       </SelectTrigger>
 
       <SelectContent>
-        {prompts?.map((prompt) => (
-          <SelectItem key={`select-${prompt.id}`} value={prompt.id}>
-            {prompt.title}
-          </SelectItem>
-        ))}
+        {prompts &&
+          prompts?.length > 0 &&
+          prompts?.map((prompt) => (
+            <SelectItem key={`select-${prompt.id}`} value={prompt.id}>
+              {prompt.title}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );

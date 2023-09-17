@@ -84,15 +84,11 @@ export default function VideoInputForm({
 
     setStatus("uploading");
 
-    const response = await fetch("/videos", {
+    const response = await fetch("http://localhost:3333/videos", {
       method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
       body: data,
     });
-
-    const video = await response.json();
+    const { video } = await response.json();
 
     const videoId = video.id;
 
@@ -104,7 +100,7 @@ export default function VideoInputForm({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        transcription: promp,
+        prompt: prompt,
       }),
     });
 

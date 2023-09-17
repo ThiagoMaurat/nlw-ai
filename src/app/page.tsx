@@ -21,11 +21,21 @@ export default function Home() {
   const [temperature, setTemperature] = useState(0.5);
   const [videoId, setVideoId] = useState<string | null>("");
 
-  const { input, setInput, handleInputChange } = useCompletion({
+  const {
+    input,
+    setInput,
+    handleInputChange,
+    handleSubmit,
+    completion,
+    isLoading,
+  } = useCompletion({
     api: "http://localhost:3333/ai/complete",
     body: {
       videoId,
       temperature,
+    },
+    headers: {
+      "Content-Type": "application/json",
     },
   });
 
@@ -62,6 +72,7 @@ export default function Home() {
               readOnly
               className="resize:none p-4 leading-relaxed"
               placeholder="Resultado gerado pela IA..."
+              value={completion}
             />
           </div>
 
@@ -78,7 +89,7 @@ export default function Home() {
 
           <Separator />
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label>Prompt</Label>
 
@@ -124,7 +135,7 @@ export default function Home() {
 
             <Separator />
 
-            <Button type="submit" className="w-full">
+            <Button disabled={isLoading} type="submit" className="w-full">
               Executar
               <Wand2 className="w-4 h-4 ml-2" />
             </Button>
